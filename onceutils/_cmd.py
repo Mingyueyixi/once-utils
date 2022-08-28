@@ -3,12 +3,22 @@
 # @Author: Lu
 # @Description
 import io
+import os
 import subprocess
 import tempfile
 import time
 from concurrent.futures.thread import ThreadPoolExecutor
 
 from onceutils import bin2text, text2bin
+
+
+def run_cmd(cmd, prt=True):
+    if prt:
+        print(cmd)
+    p = os.popen(cmd)
+    result = p.read()
+    p.close()
+    return result
 
 
 class Shell(object):

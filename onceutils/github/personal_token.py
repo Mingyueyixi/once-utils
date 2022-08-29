@@ -1,7 +1,12 @@
 # -*- coding: utf-8 -*-
 # @Date:2022/08/27 20:06
 # @Author: Lu
-# @Description quick set github project's url with a personal access token
+# @Description: Quick set github project's url with a personal access token.
+# Different from normal login,
+# the token with url will be stored in the project git file which path is .git/config,
+# so you should only run the program in a trusted environment.
+# Example: python -m onceutils.github.personal_token -u xxxUser -t xxxToken
+
 import argparse
 import os.path
 import re
@@ -113,12 +118,8 @@ def find_git_project_paths(work_path: str) -> List:
 
 
 def main():
-    parser = argparse.ArgumentParser(description="""Quick set github project's url with a personal access token.     
-
-
-Example:
-    python -m onceutils.github.personal_token -u MM -t xxxxxx
-""",add_help=True)
+    parser = argparse.ArgumentParser(description="""Quick set github project's url with a personal access token.""",
+                                     add_help=True)
     parser.add_argument('-p', '--path', dest='path', action='store', help='set work patch to find projects')
     parser.add_argument('-u', '--user', dest='user', action='store', help='set user', required=True)
     parser.add_argument('-t', '--token', dest='token', action='store', help='set token', required=True)

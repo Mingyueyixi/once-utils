@@ -22,6 +22,8 @@ def read_text(file_path: str) -> str:
 
 
 def bin2text(binary: bytes, encodes: List = None) -> str:
+    if type(binary) is str:
+        return binary
     encodes = _global_encodes if not encodes else encodes
     for en in encodes:
         try:
@@ -32,6 +34,8 @@ def bin2text(binary: bytes, encodes: List = None) -> str:
 
 
 def text2bin(text: str, encodes: List = None) -> bytes:
+    if type(text) is bytes:
+        return text
     encodes = _global_encodes if not encodes else encodes
     for en in encodes:
         try:

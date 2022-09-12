@@ -2,10 +2,10 @@ from setuptools import setup, find_packages
 
 setup(
     name="once-utils",
-    version="0.0.1",
+    version="0.0.2",
     keywords=["pip", "once-utils"],
     description="Simplest utils.",
-    long_description="A lib with simple style.",
+    long_description="A lib with simple style, you can easy to use",
     license="MIT Licence",
     classifiers=[
         'Programming Language :: Python :: 3',

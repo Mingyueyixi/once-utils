@@ -2,6 +2,7 @@
 # Author:Lu
 # Date:2022/9/19
 # Description:
+import builtins
 from typing import List
 
 
@@ -11,13 +12,11 @@ def find(lst: List, fn) -> int:
             return index
 
 
-def have(lst: List, fn) -> bool:
-    for ele in lst:
+def have(iterable, fn) -> bool:
+    for ele in iterable:
         if fn(ele):
             return True
 
 
-def filter(it: list | dict, fn):
-    index = find(it, fn)
-    if index >= 0:
-        return list[index]
+def filter2list(iterable, fn) -> List:
+    return [e for e in filter(fn, iterable)]

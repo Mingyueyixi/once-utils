@@ -1,11 +1,23 @@
+import os.path
+
 from setuptools import setup, find_packages
+
+
+def readme_md():
+    readme_md_path = os.path.join('README.md')
+    ret = ''
+    with open(readme_md_path) as f:
+        ret = f.read()
+    return ret
+
 
 setup(
     name="once-utils",
-    version="0.0.2",
+    version="0.0.3",
     keywords=["pip", "once-utils"],
     description="Simplest utils.",
-    long_description="A lib with simple style, you can easy to use",
+    long_description=readme_md(),
+    long_description_content_type='text/markdown',
     license="MIT Licence",
     classifiers=[
         'Programming Language :: Python :: 3',

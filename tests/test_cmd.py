@@ -3,10 +3,11 @@ from onceutils import Shell
 
 def test_shell():
     shell = Shell('bash')
-    res, error = shell.run("python --version")
+    res, err = shell.run("python --version", timeout=(5, 1))
     print(res)
-    res = shell.run("gradle build", timeout=5)
+    res, err = shell.run("gradle build", timeout=(5, 2))
     print(res)
-    res, error = shell.run("git --version", timeout=3)
+    print(err)
+    res, error = shell.run("git --version", timeout=(5, 3))
     print(res)
     shell.close()

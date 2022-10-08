@@ -63,23 +63,18 @@ class Shell(object):
         try:
             content = Shell._read_std_io(proc.stdout, timeout[0])
         except TimeoutError as e:
-            traceback.print_exc()
+            # traceback.print_exc()
+            pass
         finally:
             proc.stdout.close()
         try:
             error = Shell._read_std_io(proc.stderr, timeout[1])
         except TimeoutError as e:
-            traceback.print_exc()
+            # traceback.print_exc()
+            pass
         finally:
             proc.stderr.close()
         proc.terminate()
-        # fu1 = self.pool.submit(self._read_std_io, proc.stdout, timeout)
-        # fu2 = self.pool.submit(self._read_std_io, proc.stderr, timeout)
-        # try:
-        #     content = fu1.result(timeout)
-        #     error = fu2.result(timeout)
-        # except Exception as e:
-        #     pass
         return bin2text(content), bin2text(error)
 
     @classmethod

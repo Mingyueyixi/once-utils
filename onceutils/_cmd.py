@@ -7,7 +7,12 @@ import os
 import subprocess
 import tempfile
 import time
+import traceback
 from concurrent.futures.thread import ThreadPoolExecutor
+from typing import Union
+
+import httpx
+import requests
 
 from onceutils import bin2text, text2bin
 
@@ -27,9 +32,11 @@ class Shell(object):
         self.shell_args = shell_args
         self.pool = ThreadPoolExecutor(max_workers=6)
 
-    def run(self, cmd: str, timeout=5):
+    def run(self, cmd: str, timeout: Union[set, list, int] = (5, 5)):
         if not cmd:
             return
+        if type(timeout) is int:
+            timeout = (timeout, timeout)
         if not self.proc or self.proc.stdout.closed:
             std_out = self.stdout_io()
             std_err = self.stderr_io()
@@ -54,14 +61,18 @@ class Shell(object):
         content = b''
         error = None
         try:
-            content = Shell._read_std_io(proc.stdout, timeout)
+            content = Shell._read_std_io(proc.stdout, timeout[0])
         except TimeoutError as e:
+            traceback.print_exc()
+        finally:
             proc.stdout.close()
-            try:
-                error = Shell._read_std_io(proc.stderr, 0)
-            except TimeoutError as e:
-                proc.stdout.close()
-                proc.terminate()
+        try:
+            error = Shell._read_std_io(proc.stderr, timeout[1])
+        except TimeoutError as e:
+            traceback.print_exc()
+        finally:
+            proc.stderr.close()
+        proc.terminate()
         # fu1 = self.pool.submit(self._read_std_io, proc.stdout, timeout)
         # fu2 = self.pool.submit(self._read_std_io, proc.stderr, timeout)
         # try:
@@ -84,8 +95,7 @@ class Shell(object):
                 content = rc
                 break
             if time.time() - curr_time > timeout:
-                raise TimeoutError(f'read std_io timeout({timeout}/s)')
-                break
+                raise TimeoutError(f'read std_io timeout > {timeout}s')
             time.sleep(0.1)
         std_io.seek(0)
         std_io.truncate()
@@ -106,5 +116,3 @@ class Shell(object):
         # close时自动删除临时文件
         return tempfile.NamedTemporaryFile(mode='w+b', suffix='.txt', delete=True)
         # return io.open('stdout.txt', mode='wb+')
-
-

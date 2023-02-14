@@ -33,6 +33,13 @@ class Shell(object):
         self.pool = ThreadPoolExecutor(max_workers=6)
 
     def run(self, cmd: str, timeout: Union[set, list, int] = (5, 5)):
+        """
+        Run cmd by the same process.
+        The result is only use on develop, because it was not unreliable
+        :param cmd: command line
+        :param timeout: read break when it timeout
+        :return: command's output
+        """
         if not cmd:
             return
         if type(timeout) is int:

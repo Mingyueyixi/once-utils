@@ -3,30 +3,30 @@
 # @Author: Lu
 # @Description
 import io
-import os
 import subprocess
 import tempfile
 import time
-import traceback
 from concurrent.futures.thread import ThreadPoolExecutor
 from typing import Union
-
-import httpx
-import requests
 
 from onceutils import bin2text, text2bin
 
 
-def run_cmd(cmd, prt=True):
-    if prt:
-        print(cmd)
-    p = os.popen(cmd)
-    result = p.read()
-    p.close()
-    return result
+def run_cmd(cmd, prt=True, read=True):
+    return Shell().run(cmd, prt, read)
 
 
 class Shell(object):
+    def run(self, cmd: str, read=True, prt=True):
+        if prt:
+            print(cmd)
+        if read:
+            p = subprocess.run(cmd, text=False, stdout=subprocess.PIPE)
+            return bin2text(p.stdout)
+        subprocess.run(cmd, capture_output=False)
+
+
+class SameProcessShell(Shell):
     def __init__(self, shell_args='sh'):
         self.proc: subprocess.Popen = None
         self.shell_args = shell_args
@@ -44,7 +44,7 @@ class Shell(object):
             return
         if type(timeout) is int:
             timeout = (timeout, timeout)
-        if not self.proc or self.proc.stdout.closed:
+        if not self.proc or self.proc.returncode is not None:
             std_out = self.stdout_io()
             std_err = self.stderr_io()
             self.proc = subprocess.Popen(args=self.shell_args,
@@ -68,24 +68,19 @@ class Shell(object):
         content = b''
         error = None
         try:
-            content = Shell._read_std_io(proc.stdout, timeout[0])
+            content = self._read_std_io(proc.stdout, timeout[0])
         except TimeoutError as e:
             # traceback.print_exc()
             pass
-        finally:
-            proc.stdout.close()
         try:
-            error = Shell._read_std_io(proc.stderr, timeout[1])
+            error = self._read_std_io(proc.stderr, timeout[1])
         except TimeoutError as e:
             # traceback.print_exc()
+            proc.terminate()
             pass
-        finally:
-            proc.stderr.close()
-        proc.terminate()
         return bin2text(content), bin2text(error)
 
-    @classmethod
-    def _read_std_io(cls, std_io: io.FileIO, timeout: int):
+    def _read_std_io(selp, std_io: io.FileIO, timeout: int):
         content = b''
         if not std_io:
             return content

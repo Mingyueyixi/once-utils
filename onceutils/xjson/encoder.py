@@ -9,7 +9,18 @@ from json import JSONEncoder
 
 class XJSONEncoder(JSONEncoder):
     """
-    A ext JSONEncoder for support set, or an object who has '__dict__' attr
+    A ext JSONEncoder for support dump set element, or an object who has '__dict__' attr
+    Example 1：
+    result={ "a": set(), "b": set() }
+    json.dump(result, f, cls=XJSONEncoder, indent=2)
+
+    Excample 2:
+
+    class Meet(object):
+        def __init__(self):
+            self.a = "123"
+            self.b = "1234"
+    json.dump(Meet(), f, cls=XJSONEncoder, indent=2)
     """
 
     def default(self, o):
@@ -24,3 +35,4 @@ class XJSONEncoder(JSONEncoder):
             return o.__dict__
         raise TypeError(f'Object of type {o.__class__.__name__} '
                         f'is not JSON serializable')
+

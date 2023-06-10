@@ -20,4 +20,5 @@ def test_shell():
 
 def test_run_cmd():
     script_name = os.path.basename(__file__)
-    assert script_name in onceutils.run_cmd('ls ./')
+    fold = os.path.dirname(__file__)
+    assert script_name in onceutils.run_cmd(f'ls {fold}')

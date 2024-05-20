@@ -1,0 +1,17 @@
+HTTP/1.1 200 OK
+Server:
+Date: Thu, 09 May 2024 02:13:37 GMT
+Content-Type: application/json
+Transfer-Encoding: chunked
+Connection: keep-alive
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
+X-Response-Default: Default-Bar
+Access-Control-Allow-Methods: GET, POST, OPTIONS
+Access-Control-Allow-Headers: DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,CLOUD,BOXCLOUD,FASTCLOUD,fastcloud,Authorization,ACCESS_TOKEN,YYXRTC_TOKEN,phone_id,os,Authorization,user_id,APP_LICENSE_ID,SERVER_TOKEN,CLIENT_TOKEN,APP_TIME,SIGN
+
+
+{"code":"1", "message":"success", "data":{ "foo": "bar" }}
+
+

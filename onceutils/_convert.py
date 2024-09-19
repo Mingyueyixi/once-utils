@@ -2,19 +2,20 @@
 # @Date:2022/07/03 0:23
 # @Author: Lu
 # @Description convert utils
+from os import PathLike
 from typing import List
 
 _global_encodes = [None, 'utf-8', 'gbk', 'gb18030', 'gb2312']
 
 
-def read_bin(file_path: str) -> bytes:
+def read_bin(file_path: int|str|bytes|PathLike[bytes]|PathLike[str]) -> bytes:
     f = open(file_path, 'rb')
     binary = f.read()
     f.close()
     return binary
 
 
-def read_text(file_path: str) -> str:
+def read_text(file_path: int|str|bytes|PathLike[bytes]|PathLike[str]) -> str:
     f = open(file_path, 'rb')
     binary = f.read()
     f.close()

@@ -34,8 +34,8 @@ class SameProcessShell(Shell):
 
     def run(self, cmd: str, timeout: Union[set, list, int] = (5, 5)):
         """
-        Run cmd by the same process.
-        The result is only use on develop, because it was not unreliable
+        Run cmd on the same process.
+        The result is only use for develop, because it was unreliable.
         :param cmd: command line
         :param timeout: read break when it timeout
         :return: command's output

@@ -1,3 +1,4 @@
+#!/bin/bash
 result=$(pip list |grep 'twine')
 if [ -z "$result" ]
 then

@@ -2,6 +2,8 @@
 # @Date:2022/05/19 15:34
 # @Author: Lu
 # @Description
+from typing import Union
+
 from onceutils import bin2text, text2bin
 
 
@@ -77,7 +79,7 @@ class HttpRequestParse(HttpRaw):
         self.method = None
         self.protool = None
 
-    def parse(self, file_path=None, content=str | bytes):
+    def parse(self, file_path=None, content=Union[str, bytes]):
         binary = None
         if file_path:
             with open(file_path, 'rb') as f:
@@ -112,7 +114,7 @@ class HttpResponseParse(HttpRaw):
         self.code = None
         self.des = None
 
-    def parse(self, file_path=None, content=str | bytes):
+    def parse(self, file_path=None, content=Union[str, bytes]):
         binary = None
         if file_path:
             with open(file_path, 'rb') as f:
@@ -146,9 +148,9 @@ class HttpResponseParse(HttpRaw):
         return int(self.code)
 
 
-def parse_http_request(file_path=None, content=str | bytes) -> HttpRequestParse:
+def parse_http_request(file_path=None, content=Union[str , bytes]) -> HttpRequestParse:
     return HttpRequestParse().parse(file_path, content)
 
 
-def parse_http_response(file_path=None, content=str | bytes) -> HttpResponseParse:
+def parse_http_response(file_path=None, content=Union[str , bytes]) -> HttpResponseParse:
     return HttpResponseParse().parse(file_path, content)

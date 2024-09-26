@@ -3,12 +3,12 @@
 # @Author: Lu
 # @Description
 import json
-from typing import Type
+from typing import Type, Union
 
 from onceutils.xjson import XJSONEncoder
 
 
-def from_json(s: str | bytes, clazz: Type[object] = None, *,
+def from_json(s: Union[str , bytes], clazz: Type[object] = None, *,
               cls=None, object_hook=None, parse_float=None,
               parse_int=None, parse_constant=None,
               object_pairs_hook=None, **kwargs) -> Type:

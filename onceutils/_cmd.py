@@ -17,11 +17,21 @@ def run_cmd(cmd, prt=True, read=True):
 
 
 class Shell(object):
-    def run(self, cmd: str, read=True, prt=True):
+
+    def run(self, cmd: str, read=True, prt=True, cwd=None):
+        """
+        Run cmd on the same process.
+        The result is only use for develop, because it was unreliable.
+        :param cmd: command line
+        :param read: read result
+        :param prt: print command line
+        :param cwd: working directory of the command
+        :return: command's output
+        """
         if prt:
             print(cmd)
         if read:
-            p = subprocess.run(cmd, text=False, stdout=subprocess.PIPE)
+            p = subprocess.run(cmd, text=False, stdout=subprocess.PIPE, cwd=cwd, shell=True)
             return bin2text(p.stdout)
         subprocess.run(cmd, capture_output=False)
 

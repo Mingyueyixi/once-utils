@@ -13,7 +13,7 @@ def readme_md():
 
 setup(
     name="once-utils",
-    version="0.0.8",
+    version="0.1.0",
     keywords=["pip", "once-utils"],
     description="Simplest utils.",
     long_description=readme_md(),

@@ -16,13 +16,17 @@ class Meet(object):
 
 def test_dumps_object():
     json_text = json.dumps(Meet(), cls=XJSONEncoder, indent=2)
-    print(json_text)
-
+    json_target = {
+        "a": 123,
+        "b": 1234
+    }
+    assert json_text == json.dumps(json_target, indent=2)
 
 def test_dumps_dict():
     result = {"a": set(), "b": set()}
     json_text = json.dumps(result, cls=XJSONEncoder, indent=2)
-    print(json_text)
+    assert json_text == json.dumps({"a": [], "b": []}, indent=2)
+
 
 
 def dict_to_object(o: dict):
@@ -36,7 +40,8 @@ def dict_to_object(o: dict):
 
 def test_load_as_set():
     json_dict = json.loads('{"a":[123, "a"]}', object_hook=dict_to_object)
-    print(json_dict)
+    assert isinstance(json_dict, Meet)
+    assert isinstance(json_dict.a, set)
 
 
 def test_from_json():

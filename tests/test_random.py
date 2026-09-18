@@ -12,7 +12,6 @@ import onceutils
 def test_random_int_list():
     size, min_v, max_v = 1000, -100, 100
     lst = onceutils.random_int_list(size, min_v, max_v)
-    print(lst)
 
     assert len(lst) == size
     for ele in lst:
@@ -24,7 +23,6 @@ def test_random_int_list():
 def test_random_float_list():
     size, min_v, max_v = 1000, -100, 100
     lst = onceutils.random_float_list(size, min_v, max_v)
-    print(lst)
 
     assert len(lst) == size
     for ele in lst:
@@ -36,4 +34,6 @@ def test_random_float_list():
 def test_random_chinese_name():
     for i in range(1000):
         name = onceutils.random_chinese_full_name()
-        print(name)
+        for ch in name:
+            assert '\u4e00' <= ch <= '\u9fff'
+

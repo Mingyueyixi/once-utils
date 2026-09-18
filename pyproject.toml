@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools>=77.0.3"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "once-utils"
+version = "0.1.0"
+description = "A lib with simple style, easy to use"
+readme = "README.md"
+requires-python = ">=3.6"
+license = "MIT"
+keywords = ["once-utils", "utils"]
+authors = [
+    { name = "Lu", email = "Mingyueyixi@hotmail.com" },
+]
+classifiers = [
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Typing :: Typed",
+]
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/Mingyueyixi/once-utils"
+Repository = "https://github.com/Mingyueyixi/once-utils"
+Issues = "https://github.com/Mingyueyixi/once-utils/issues"
+
+[project.optional-dependencies]
+# 库本身支持 3.6+，但构建/测试工具链已不支持 3.6/3.7，
+# 故 dev extra 只在 3.8+ 生效（低版本上这个 extra 为空，不会安装失败）。
+# 构建与发布改由 uv 的 `uv build` / `uv publish` 负责，不再依赖 build / twine 包。
+dev = [
+    "pytest>=7.4; python_version >= '3.8'",
+]
+
+# uv 默认安装 dev 依赖组，`uv run pytest ...` 可直接使用
+[dependency-groups]
+dev = [
+    "pytest>=7.4; python_version >= '3.8'",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+onceutils = ["py.typed"]
+tests = ["data/*.txt", "data/*.gradle"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

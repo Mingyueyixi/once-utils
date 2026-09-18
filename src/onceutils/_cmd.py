@@ -33,7 +33,8 @@ class Shell(object):
         if read:
             p = subprocess.run(cmd, text=False, stdout=subprocess.PIPE, cwd=cwd, shell=True)
             return bin2text(p.stdout)
-        subprocess.run(cmd, capture_output=False)
+        # text/capture_output 两个关键字是 3.7 才有的，此处用默认值即可（等价于原写法）
+        subprocess.run(cmd)
 
 
 class SameProcessShell(Shell):
@@ -59,7 +60,6 @@ class SameProcessShell(Shell):
             std_err = self.stderr_io()
             self.proc = subprocess.Popen(args=self.shell_args,
                                          shell=True,
-                                         text=False,
                                          start_new_session=True,
                                          stdin=subprocess.PIPE,
                                          stdout=std_out,

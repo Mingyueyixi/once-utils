@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 # Author:Lu
-# Date:2024/5/9 12:18 
+# Date:2024/5/9 12:18
 # Description:
 from os import PathLike
 from pathlib import Path
@@ -13,7 +13,7 @@ _that_dir_path = Path(__file__).parent
 
 class _Resource(object):
 
-    def get_data_path(self, file_name: Union[str , PathLike]):
+    def data_path(self, file_name: Union[str , PathLike]):
         return _that_dir_path / "data" / file_name
 
     def read_text(self, file_name: Union[str , PathLike]):

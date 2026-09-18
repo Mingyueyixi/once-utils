@@ -5,4 +5,4 @@ pip uninstall -y once-utils
 # depreciated
 #python setup.py install
 
-python -m pip install .
+python -m pip install -e .

@@ -5,35 +5,62 @@ on:
   pull_request:
 
 jobs:
-  build_python:
-
+  test:
     strategy:
       matrix:
         runner: [ ubuntu-latest, macos-latest ] # , windows-latest
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12" ]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
 
     runs-on: ${{matrix.runner}}
     name: OS ${{matrix.runner}} Python ${{matrix.python-version}}
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+      # 安装 uv，并由 uv 负责下载/管理对应版本的 Python（不再需要 actions/setup-python）
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
         with:
           python-version: ${{ matrix.python-version }}
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
 
-      - name: Install dependencies
+      # uv sync 默认安装 dev 依赖组(pytest)，--all-extras 顺带装上 [dev] extra
+      - name: Sync dependencies
+        run: uv sync --all-extras
+
+      - name: Show versions
         run: |
-          pip install pytest
-          pip install -r requirements.txt
-
-      - name: Check Python version
-        run: python -V
+          uv --version
+          uv run python -V
 
       - name: Test with pytest
-        env:
-          PYTHONPATH: .
-        run: pytest -vs tests/test_iter.py tests/test_random.py
+        # pyproject.toml 里 [tool.pytest.ini_options].testpaths = ["tests"]，直接 `pytest` 即覆盖全部
+        run: uv run pytest -vs
 
+  build:
+    runs-on: ubuntu-latest
+    name: Build distribution
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: "3.14"
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Sync dependencies
+        run: uv sync --all-extras
+
+      - name: Build sdist and wheel
+        run: uv build
+
+      - name: Verify wheel content
+        run: |
+          uv pip install --force-reinstall dist/*.whl
+          uv run python -c "import onceutils, onceutils.analysis.groovy, onceutils.http, onceutils.xjson"

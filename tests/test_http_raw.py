@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 # Author:Lu
-# Date:2024/5/9 11:46 
+# Date:2024/5/9 11:46
 # Description:
 import json
 
 from onceutils import parse_http_request
 from onceutils.http import parse_http_response
-from tests.resource import Res
+from ._resource import Res
 
 
 def test_http_response_parser():

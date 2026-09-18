@@ -1,0 +1,31 @@
+# Source distribution manifest.
+# 只影响 sdist(uv build 产出的 .tar.gz)，不影响 wheel。
+# Ref: https://setuptools.pypa.io/en/latest/userguide/miscellaneous.html
+
+# 必需: README 作为 long_description 在 PyPI 页面展示
+include README.md
+include pyproject.toml
+include LICENSE*
+
+# 兜底: 即使 src 下有 setuptools 识别不到的资源文件，也能打进去
+recursive-include src *.py *.typed
+
+# 排除项 ----------------------------------------------------
+# tests/ 不进 sdist: 测试代码与测试数据都在仓库里，不应在制品中
+prune tests/
+prune test/
+# 工作产物 / 内部目录不进 sdist
+prune .github/
+prune .venv/
+prune build/
+prune dist/
+prune .pytest_cache/
+prune .tox/
+prune *.egg-info
+prune src/*.egg-info
+
+# 通用排除
+global-exclude __pycache__
+global-exclude *.py[cod]
+global-exclude *.so
+global-exclude .DS_Store

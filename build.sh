@@ -1,26 +1,11 @@
 #!/bin/bash
+# 用 uv build 构建 sdist + wheel(替代旧的 pip install build && python -m build)
+# 需要本机已安装 uv(https://docs.astral.sh/uv/getting-started/installation/)
 
 if [ -d "./dist" ]; then
     rm -rf ./dist/*
 fi
 
-#    pip install build
-if [[ `pip list | grep "build"` ]]; then
-    echo "build tools already installed"
-else
-    pip install build
-fi
-
 echo "building package..."
-# deprecated 58.3.0
-#python setup.py sdist
-#https://packaging.python.org/en/latest/discussions/setup-py-deprecated/
-
-python -m build
-
+uv build
 echo "building package completed..."
-
-
-
-
-

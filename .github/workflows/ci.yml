@@ -5,40 +5,10 @@ on:
   pull_request:
 
 jobs:
-  test:
-    strategy:
-      matrix:
-        runner: [ ubuntu-latest, macos-latest ] # , windows-latest
-        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
-
-    runs-on: ${{matrix.runner}}
-    name: OS ${{matrix.runner}} Python ${{matrix.python-version}}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      # 安装 uv，并由 uv 负责下载/管理对应版本的 Python（不再需要 actions/setup-python）
-      - name: Install uv
-        uses: astral-sh/setup-uv@v6
-        with:
-          python-version: ${{ matrix.python-version }}
-          enable-cache: true
-          cache-dependency-glob: "uv.lock"
-
-      # uv sync 默认安装 dev 依赖组(pytest)，--all-extras 顺带装上 [dev] extra
-      - name: Sync dependencies
-        run: uv sync --all-extras
-
-      - name: Show versions
-        run: |
-          uv --version
-          uv run python -V
-
-      - name: Test with pytest
-        # pyproject.toml 里 [tool.pytest.ini_options].testpaths = ["tests"]，直接 `pytest` 即覆盖全部
-        run: uv run pytest -vs
-
+  # 先在高版本 Python 上构建一次纯 Python wheel(py3-none-any)。
+  # 注意: 构建后端要求 setuptools>=77.0.3，而它 Requires-Python>=3.9，
+  #       所以「构建」只能在 3.9+ 上做，不能放到 3.8 的测试矩阵里。
+  #       产物 wheel 是跨版本通用的，各版本测试直接安装它即可。
   build:
     runs-on: ubuntu-latest
     name: Build distribution
@@ -64,3 +34,53 @@ jobs:
         run: |
           uv pip install --force-reinstall dist/*.whl
           uv run python -c "import onceutils, onceutils.analysis.groovy, onceutils.http, onceutils.xjson"
+
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: dist/*
+
+  test:
+    needs: build
+    strategy:
+      matrix:
+        runner: [ ubuntu-latest, macos-latest ] # , windows-latest
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12", "3.13", "3.14"]
+
+    runs-on: ${{matrix.runner}}
+    name: OS ${{matrix.runner}} Python ${{matrix.python-version}}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 安装 uv，并由 uv 负责下载/管理对应版本的 Python（不再需要 actions/setup-python）
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+        with:
+          python-version: ${{ matrix.python-version }}
+          enable-cache: true
+          cache-dependency-glob: "uv.lock"
+
+      - name: Download dist
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: dist
+
+      # 不构建本项目源码: 直接安装 build 环节产出的 wheel。
+      # 这样 3.8 也能跑测试(它无法满足构建后端对 Python>=3.9 的要求)。
+      - name: Install wheel and pytest
+        run: |
+          uv venv --python ${{ matrix.python-version }}
+          uv pip install dist/*.whl pytest
+
+      - name: Show versions
+        run: |
+          uv --version
+          .venv/bin/python -V
+
+      - name: Test with pytest
+        # pyproject.toml 里 [tool.pytest.ini_options].testpaths = ["tests"]，直接 `pytest` 即覆盖全部
+        run: .venv/bin/pytest -vs
